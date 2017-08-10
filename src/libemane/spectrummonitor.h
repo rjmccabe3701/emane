@@ -54,7 +54,7 @@ namespace EMANE
 
 
     enum class NoiseMode {NONE, ALL, OUTOFBAND};
-    
+
     void initialize(const FrequencySet & foi,
                     std::uint64_t u64BandwidthHz,
                     double dReceiverSensitivityMilliWatt,
@@ -81,6 +81,10 @@ namespace EMANE
 
     double getReceiverSensitivitydBm() const override;
 
+    bool isJammed() const override;
+
+    void beingJammedNow() override;
+
     // test harness access
     SpectrumWindow request_i(const TimePoint & now,
                              std::uint64_t u64FrequencyHz,
@@ -103,6 +107,7 @@ namespace EMANE
     Microseconds maxOffset_;
     Microseconds maxPropagation_;
     Microseconds maxDuration_;
+    TimePoint lastJamPktReceived_;
     bool bMaxClamp_;
     Microseconds timeSyncThreshold_;
     TransmitterBandwidthCache transmitterBandwidthCache_;

@@ -72,6 +72,7 @@ namespace
   const std::uint16_t DROP_CODE_GAINMANAGER_ANTENNAPROFILE  = 6;
   const std::uint16_t DROP_CODE_NOT_FOI                     = 7;
   const std::uint16_t DROP_CODE_SPECTRUM_CLAMP              = 8;
+  const std::uint16_t MFRF_CODE_JAM_PKT              = 9;
 
   EMANE::StatisticTableLabels STATISTIC_TABLE_LABELS{"Out-of-Band",
       "Rx Sensitivity",
@@ -80,7 +81,9 @@ namespace
       "Gain Horizon",
       "Gain Profile",
       "Not FOI",
-      "Spectrum Clamp"};
+      "Spectrum Clamp",
+      "Jam Pkt"
+  };
 }
 
 EMANE::FrameworkPHY::FrameworkPHY(NEMId id,
@@ -1217,6 +1220,24 @@ void EMANE::FrameworkPHY::processUpstreamPacket_i(const TimePoint & now,
                                               __func__,
                                               pktInfo.getSource(),
                                               pktInfo.getDestination());
+
+                      if(!resultingFrequencySegments.empty())
+                      {
+                         //This is a jamming packet
+                         pSpectrumMonitor_->beingJammedNow();
+                         commonLayerStatistics_.processOutbound(pkt,
+                                                                std::chrono::duration_cast<Microseconds>(Clock::now() - now),
+                                                                MFRF_CODE_JAM_PKT);
+
+                         LOGGER_STANDARD_LOGGING(pPlatformService_->logService(),
+                                                 ERROR_LEVEL, // DEBUG_LEVEL,
+                                                 "PHYI %03hu FrameworkPHY::%s src %hu, dst %hu,"
+                                                 " JAMMING PACKET ",
+                                                 id_,
+                                                 __func__,
+                                                 pktInfo.getSource(),
+                                                 pktInfo.getDestination());
+                         }
                     }
 
                 }

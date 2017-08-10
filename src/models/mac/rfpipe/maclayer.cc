@@ -63,6 +63,7 @@ namespace
   const std::uint16_t DROP_CODE_BAD_CONTROL_INFO   = 5;
   const std::uint16_t DROP_CODE_BAD_SPECTRUM_QUERY = 6;
   const std::uint16_t DROP_CODE_FLOW_CONTROL_ERROR = 7;
+  const std::uint16_t DROP_CODE_JAMMED = 8;
 
   EMANE::StatisticTableLabels STATISTIC_TABLE_LABELS
   {
@@ -72,7 +73,8 @@ namespace
       "Queue Overflow",
       "Bad Control",
       "Bad Spectrum Query",
-      "Flow Control"
+      "Flow Control",
+      "Jammed"
       };
 }
 
@@ -857,6 +859,7 @@ EMANE::Models::RFPipe::MACLayer::processUpstreamPacket(const CommonMACHeader & c
                                                                                     span,
                                                                                     startOfReception);
 
+
                             // since we only have a single segment the span will equal the segment duration.
                             // For simple noise processing we will just pull out the max noise segment, we can
                             // use the maxBinNoiseFloor utility function for this. More elaborate noise window analysis
@@ -904,6 +907,7 @@ EMANE::Models::RFPipe::MACLayer::processUpstreamPacket(const CommonMACHeader & c
                         const Microseconds & durationMicroseconds{frequencySegment.getDuration()};
 
                         // check sinr
+#if 0
                         if(!checkPOR(dSINR, pkt.length()))
                           {
                             LOGGER_VERBOSE_LOGGING(pPlatformService_->logService(),
@@ -923,6 +927,29 @@ EMANE::Models::RFPipe::MACLayer::processUpstreamPacket(const CommonMACHeader & c
                             // drop
                             return;
                           }
+#else
+                        if(pRadioService_->spectrumService().isJammed())
+                        {
+                            LOGGER_STANDARD_LOGGING(pPlatformService_->logService(),
+                                                   DEBUG_LEVEL,
+                                                   "MACI %03hu %s upstream JAMMEING processing: src %hu, dst %hu, "
+                                                   "rxpwr %3.2f dBm, drop",
+                                                   id_,
+                                                   pzLayerName,
+                                                   pktInfo.getSource(),
+                                                   pktInfo.getDestination(),
+                                                   frequencySegment.getRxPowerdBm());
+
+                            commonLayerStatistics_.processOutbound(pkt,
+                                                                   std::chrono::duration_cast<Microseconds>(Clock::now() - beginTime),
+                                                                   DROP_CODE_JAMMED);
+
+                            // drop
+                            return;
+                        }
+#endif
+
+
 
                         // update neighbor metrics
                         neighborMetricManager_.updateNeighborRxMetric(pktInfo.getSource(),    // nbr (src)
