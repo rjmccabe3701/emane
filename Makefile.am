@@ -6,8 +6,7 @@ SUBDIRS= src                            \
          scripts/doc                    \
          dtd                            \
          doc                            \
-         schema                         \
-         test
+         schema
 
 edit = sed                                               \
        -e 's|@VERSION[@]|$(VERSION)|g'                   \
@@ -82,7 +81,7 @@ EXTRA_DIST =         \
  debian              \
  autogen.sh
 
-install-exec-hook:	
+install-exec-hook:
 	$(mkinstalldirs) $(DESTDIR)$(datadir)/$(PACKAGE)/manifest
 	./scripts/emanegenmanifests.sh $(DESTDIR)$(datadir)/$(PACKAGE)/manifest
 

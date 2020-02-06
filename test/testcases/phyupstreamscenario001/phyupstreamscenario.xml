@@ -17,6 +17,7 @@
       </paramlist>
       <paramlist name='noisemode'>
         <item value='none'/>
+        <!--<item value='none'/>-->
       </paramlist>
       <paramlist name='bandwidth'>
         <item value='20M'/>
@@ -57,13 +58,42 @@
     </pathloss>
   </action>
 
+  <!-- Check if inband noise? -->
+  <action>                        
+    <packet now='30000010' txtime='30000005' bandwidth='20000000'
+            size='1024' source='2' destination='65535' subid='1' fixedgain='0'>
+      <segments>
+        <segment frequency="2000000000" offset="2" duration="5"/>
+        <segment frequency="2020000000" offset="10" duration="10"/>
+      <!--  <segment frequency="2200000000" offset="0" duration="200"/> -->
+      </segments>
+      <transmitters>
+        <transmitter nem='2' power='0'/>
+      </transmitters>
+    </packet>
+        <packet now='30000010' txtime='30000005' bandwidth='20000000'
+            size='1024' source='3' destination='65535' subid='1' fixedgain='0'>
+      <segments>
+        <segment frequency="2000000000" offset="2" duration="5"/>
+        <segment frequency="2020000000" offset="10" duration="10"/>
+      <!--  <segment frequency="2200000000" offset="0" duration="200"/> -->
+      </segments>
+      <transmitters>
+        <transmitter nem='3' power='10'/>
+      </transmitters>
+    </packet>
+  </action>
+
+
 
   <!-- action 4 -->
   <action>                        
     <packet now='30000010' txtime='30000005' bandwidth='20000000'
             size='1024' source='2' destination='65535' subid='1' fixedgain='0'>
       <segments>
-        <segment frequency="2200000000" offset="0" duration="200"/>
+        <segment frequency="2000000000" offset="2" duration="5"/>
+        <segment frequency="2020000000" offset="10" duration="10"/>
+      <!--  <segment frequency="2200000000" offset="0" duration="200"/> -->
       </segments>
       <transmitters>
         <transmitter nem='2' power='0'/>

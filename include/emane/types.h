@@ -38,36 +38,85 @@
 #include <string>
 #include <list>
 
+#ifdef OFFLINE_TEST_TIMER
+namespace detail
+{
+struct offline_test_clock
+{
+  using duration = std::chrono::system_clock::duration;//= std::chrono::microseconds;
+  using rep = duration::rep;
+  using period = duration::period;
+  using time_point = std::chrono::time_point<offline_test_clock>;
+  static const bool is_steady = true;
+
+  static time_point now() noexcept
+  {
+    return now_;
+  }
+
+  static void set_now(time_point t)
+  {
+    now_ = t;
+  }
+
+  static void add_time(duration d)
+  {
+    now_ += d;
+  }
+
+  //template<typename T>
+  //static std::time_t to_time_t(const T& t) noexcept
+  static std::time_t to_time_t(time_point& t) noexcept
+  {
+    return std::time_t {};
+    //return std::chrono::system_clock::to_time_t(
+     // std::chrono::time_point_cast<std::chrono::system_clock::duration>(t));
+      //std::chrono::time_point_cast<std::chrono::steady_clock::duration>(t));
+      //std::chrono::seconds{0}});
+    //t.time_since_epoch());
+      //std::chrono::steady_clock::time_point{t.time_since_epoch()});
+      //std::chrono::time_point_cast<std::chrono::system_clock::duration>(t));
+  }
+
+private:
+  static time_point now_;
+};
+}
+#endif
+
 namespace EMANE
 {
-  using Seconds = std::chrono::seconds;
-  using Milliseconds = std::chrono::milliseconds;
-  using Microseconds = std::chrono::microseconds;
-  using Nanoseconds = std::chrono::nanoseconds;
-  using DoubleSeconds = std::chrono::duration<double>;
-  using Clock = std::chrono::system_clock;
-  using Duration = Clock::duration;
-  using TimePoint = Clock::time_point;
-  
-  using NEMId = std::uint16_t;
-  using EventId = std::uint16_t;
-  using TimerEventId = std::size_t;
+using Seconds = std::chrono::seconds;
+using Milliseconds = std::chrono::milliseconds;
+using Microseconds = std::chrono::microseconds;
+using Nanoseconds = std::chrono::nanoseconds;
+using DoubleSeconds = std::chrono::duration<double>;
+#ifdef OFFLINE_TEST_TIMER
+using Clock = detail::offline_test_clock;
+#else
+using Clock = std::chrono::system_clock;
+#endif
+using Duration = Clock::duration;
+using TimePoint = Clock::time_point;
 
-  using PlatformId = std::uint16_t;
-  using AntennaProfileId = std::uint16_t;
-  using ControlMessageId = std::uint16_t;
-  using RegistrationId = std::uint16_t;
-  using BuildId = std::uint32_t;
+using NEMId = std::uint16_t;
+using EventId = std::uint16_t;
+using TimerEventId = std::size_t;
 
-  using LengthPrefix = std::uint16_t;
+using PlatformId = std::uint16_t;
+using AntennaProfileId = std::uint16_t;
+using ControlMessageId = std::uint16_t;
+using RegistrationId = std::uint16_t;
+using BuildId = std::uint32_t;
 
-  using Priority = std::uint8_t;
+using LengthPrefix = std::uint16_t;
 
-  using Strings = std::list<std::string>;
+using Priority = std::uint8_t;
 
-  // All 1's NEMId represents a broad cast packet
-  constexpr NEMId NEM_BROADCAST_MAC_ADDRESS{std::numeric_limits<NEMId>::max()};
-}
+using Strings = std::list<std::string>;
 
+// All 1's NEMId represents a broad cast packet
+constexpr NEMId NEM_BROADCAST_MAC_ADDRESS{std::numeric_limits<NEMId>::max()};
+} // namespace EMANE
 
 #endif // EMANETYPES_HEADER_

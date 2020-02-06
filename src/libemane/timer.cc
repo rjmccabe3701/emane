@@ -35,21 +35,164 @@
 #include <sys/timerfd.h>
 #include <vector>
 #include <unistd.h>
+#include <iostream>
 
-EMANE::Utils::Timer::Timer():
+#ifdef OFFLINE_TEST_TIMER
+detail::offline_test_clock::time_point detail::offline_test_clock::now_;
+EMANE::Utils::Timer::Timer() : bRunning_{true},
+                               timerId_{} {};
 
-  bRunning_{true},
-  timerId_{},
-  iFd_{}
+EMANE::Utils::Timer::~Timer()
+{
+  // synchronization block
+  {
+    std::lock_guard<std::mutex> m(mutex_);
+
+    bRunning_ = false;
+  }
+}
+
+bool EMANE::Utils::Timer::cancel(TimerId timerId)
+{
+  std::lock_guard<std::mutex> m(mutex_);
+  bool bCancel{};
+
+  auto iter = timerIdMap_.find(timerId);
+
+  if (iter != timerIdMap_.end())
+  {
+    // clean up the timer stores
+    timePointMap_.erase({iter->second, timerId});
+
+    timerIdMap_.erase(iter);
+
+    bCancel = true;
+  }
+
+  return bCancel;
+}
+
+EMANE::Utils::Timer::TimerId
+EMANE::Utils::Timer::schedule(Callback callback,
+                              const TimePoint &timePoint,
+                              const Duration &interval)
+{
+  timerId_ += 1;
+  std::cout << "Schedule event at time " << timePoint.time_since_epoch().count() << std::endl;
+  timePointMap_.insert(std::make_pair(std::make_pair(timePoint, timerId_),
+                                      std::make_tuple(timerId_,
+                                                      timePoint,
+                                                      interval,
+                                                      callback,
+                                                      timePoint)));
+
+  timerIdMap_.insert(std::make_pair(timerId_, timePoint));
+
+  return timerId_;
+}
+
+void EMANE::Utils::Timer::runTo(const TimePoint &absoluteTimePoint)
+{
+  EMANE::Clock::set_now(absoluteTimePoint);
+  std::vector<TimerInfo> expired;
+  {
+    std::unique_lock<std::mutex> lock(mutex_);
+
+    for (const auto &entry : timePointMap_)
+    {
+      const auto &timePoint = std::get<1>(entry.second);
+
+      if (absoluteTimePoint >= timePoint)
+      {
+        expired.push_back(std::move(entry.second));
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+  for (const auto &info : expired)
+  {
+    const TimerId &timerId{std::get<0>(info)};
+    const TimePoint &expireTime{std::get<1>(info)};
+    const Callback &callback{std::get<3>(info)};
+    const TimePoint &scheduleTime{std::get<4>(info)};
+
+    try
+    {
+      callback(timerId,
+               expireTime,
+               scheduleTime,
+               expireTime);
+    }
+    catch (...)
+    {
+    }
+  }
+  // remove any expired timers from the timer stores and reschedule
+  // any that have a repeat interval
+  for (const auto &info : expired)
+  {
+    std::unique_lock<std::mutex> lock(mutex_);
+    TimerId timerId{};
+    TimePoint expireTime{};
+    Duration interval{};
+    Callback callback{};
+
+    std::tie(timerId, expireTime, interval, callback, std::ignore) = info;
+
+    timePointMap_.erase({expireTime, timerId});
+
+    timerIdMap_.erase(timerId);
+
+    if (interval != Duration::zero())
+    {
+      expireTime += interval;
+      while (expireTime < EMANE::Clock::now())
+      {
+        //FOr periodic clocks possibly fire several times
+        try
+        {
+          callback(timerId,
+                   expireTime,
+                   expireTime-interval,
+                   expireTime);
+        }
+        catch (...)
+        {
+        }
+        expireTime += interval;
+      }
+
+      timePointMap_.insert(std::make_pair(std::make_pair(expireTime, timerId),
+                                          std::make_tuple(timerId,
+                                                          expireTime,
+                                                          interval,
+                                                          callback,
+                                                          absoluteTimePoint)));
+
+      timerIdMap_.insert(std::make_pair(timerId, expireTime));
+    }
+  }
+}
+
+#else
+
+EMANE::Utils::Timer::Timer() :
+
+                               bRunning_{true},
+                               timerId_{},
+                               iFd_{}
 {
   // create an interval timer with CLOCK_REALTIME
-  if((iFd_ = timerfd_create(CLOCK_REALTIME,0)) < 0)
-    {
-      throw TimerException{};
-    }
+  if ((iFd_ = timerfd_create(CLOCK_REALTIME, 0)) < 0)
+  {
+    throw TimerException{};
+  }
 
   // spawn the scheduler thread
-  thread_ = std::move(std::thread{&Timer::scheduler,this});
+  thread_ = std::move(std::thread{&Timer::scheduler, this});
 };
 
 EMANE::Utils::Timer::~Timer()
@@ -57,16 +200,16 @@ EMANE::Utils::Timer::~Timer()
   // synchronization block
   {
     std::lock_guard<std::mutex> m(mutex_);
-    
+
     bRunning_ = false;
   }
 
-  // insert a new timer to unblock 
+  // insert a new timer to unblock
   //  scheduler thread
-  itimerspec spec{{0,0},{0,1}};
- 
-  timerfd_settime(iFd_,0,&spec,nullptr);
-  
+  itimerspec spec{{0, 0}, {0, 1}};
+
+  timerfd_settime(iFd_, 0, &spec, nullptr);
+
   thread_.join();
 
   close(iFd_);
@@ -80,31 +223,31 @@ bool EMANE::Utils::Timer::cancel(TimerId timerId)
 
   auto iter = timerIdMap_.find(timerId);
 
-  if(iter != timerIdMap_.end())
+  if (iter != timerIdMap_.end())
+  {
+    bool bReschedule{};
+
+    // if the timer to cancel is the earliest timer
+    //  we need to cancel the timer and reschedule
+    if (std::get<0>(timePointMap_.begin()->second) == timerId)
     {
-      bool bReschedule{};
-
-      // if the timer to cancel is the earliest timer
-      //  we need to cancel the timer and reschedule
-      if(std::get<0>(timePointMap_.begin()->second) == timerId)
-        {
-          bReschedule = true;
-          cancel_i();
-        }
-      
-      // clean up the timer stores
-      timePointMap_.erase({iter->second,timerId});
-      
-      timerIdMap_.erase(iter);
-
-      // if necessary reschedule the new earliest timer
-      if(bReschedule)
-        {
-          schedule_i();
-        }
-
-      bCancel = true;
+      bReschedule = true;
+      cancel_i();
     }
+
+    // clean up the timer stores
+    timePointMap_.erase({iter->second, timerId});
+
+    timerIdMap_.erase(iter);
+
+    // if necessary reschedule the new earliest timer
+    if (bReschedule)
+    {
+      schedule_i();
+    }
+
+    bCancel = true;
+  }
 
   return bCancel;
 }
@@ -113,50 +256,50 @@ bool EMANE::Utils::Timer::cancel(TimerId timerId)
 void EMANE::Utils::Timer::cancel_i()
 {
   // cancel any existing timer
-  itimerspec spec{{0,0},{0,0}};
-  timerfd_settime(iFd_,0,&spec,nullptr);
+  itimerspec spec{{0, 0}, {0, 0}};
+  timerfd_settime(iFd_, 0, &spec, nullptr);
 }
 
 EMANE::Utils::Timer::TimerId
 EMANE::Utils::Timer::schedule(Callback callback,
-                              const TimePoint & timePoint,
-                              const Duration & interval)
+                              const TimePoint &timePoint,
+                              const Duration &interval)
 {
   std::unique_lock<std::mutex> lock(mutex_);
 
   bool bReschedule{};
 
   // if no timers are present we need to schedule this timer
-  if(timePointMap_.empty())
-    {
-      // need to reschedule
-      bReschedule = true;
-    }
-  else if(timePoint < timePointMap_.begin()->first.first)
-    {
-      // this time is earlier than the current earliest timer
-      //  so we need to cancel the current timer and reschedule
-      cancel_i();
-      bReschedule = true;
-    }
+  if (timePointMap_.empty())
+  {
+    // need to reschedule
+    bReschedule = true;
+  }
+  else if (timePoint < timePointMap_.begin()->first.first)
+  {
+    // this time is earlier than the current earliest timer
+    //  so we need to cancel the current timer and reschedule
+    cancel_i();
+    bReschedule = true;
+  }
 
-  timerId_+=1;
-  
-  timePointMap_.insert(std::make_pair(std::make_pair(timePoint,timerId_),
+  timerId_ += 1;
+
+  timePointMap_.insert(std::make_pair(std::make_pair(timePoint, timerId_),
                                       std::make_tuple(timerId_,
                                                       timePoint,
                                                       interval,
                                                       callback,
                                                       Clock::now())));
-  
-  timerIdMap_.insert(std::make_pair(timerId_,timePoint));
+
+  timerIdMap_.insert(std::make_pair(timerId_, timePoint));
 
   // if necessary rechedule the new earliest timer
-  if(bReschedule)
-    {
-      schedule_i();
-    }
-  
+  if (bReschedule)
+  {
+    schedule_i();
+  }
+
   return timerId_;
 }
 
@@ -164,117 +307,118 @@ EMANE::Utils::Timer::schedule(Callback callback,
 void EMANE::Utils::Timer::schedule_i()
 {
   // only schedule the earliest time if one is present
-  if(!timePointMap_.empty())
-    {
-      auto & timePoint = timePointMap_.begin()->first.first;
+  if (!timePointMap_.empty())
+  {
+    auto &timePoint = timePointMap_.begin()->first.first;
 
-      auto timeSinceEpoch = timePoint.time_since_epoch();
+    auto timeSinceEpoch = timePoint.time_since_epoch();
 
-      auto sec = std::chrono::duration_cast<Seconds>(timeSinceEpoch);
+    auto sec = std::chrono::duration_cast<Seconds>(timeSinceEpoch);
 
-      auto nsec = std::chrono::duration_cast<Nanoseconds>(timeSinceEpoch % Seconds{1});
+    auto nsec = std::chrono::duration_cast<Nanoseconds>(timeSinceEpoch % Seconds{1});
 
-      // schedule the interval timer
-      itimerspec spec{{0,0},{sec.count(),nsec.count()}};
+    // schedule the interval timer
+    itimerspec spec{{0, 0}, {sec.count(), nsec.count()}};
 
-      timerfd_settime(iFd_,TFD_TIMER_ABSTIME,&spec,nullptr);
-    }
+    timerfd_settime(iFd_, TFD_TIMER_ABSTIME, &spec, nullptr);
+  }
 }
 
-  
 void EMANE::Utils::Timer::scheduler()
 {
   std::vector<TimerInfo> expired;
 
   std::uint64_t u64Expired{};
 
-  while(1)
+  while (1)
+  {
+    // if there are any expired timers execute their
+    //  respective callbacks
+    for (const auto &info : expired)
     {
-      // if there are any expired timers execute their 
-      //  respective callbacks
-      for(const auto & info : expired)
-        {
-          const TimerId & timerId{std::get<0>(info)};
-          const TimePoint & expireTime{std::get<1>(info)};
-          const Callback & callback{std::get<3>(info)};
-          const TimePoint & scheduleTime{std::get<4>(info)};
+      const TimerId &timerId{std::get<0>(info)};
+      const TimePoint &expireTime{std::get<1>(info)};
+      const Callback &callback{std::get<3>(info)};
+      const TimePoint &scheduleTime{std::get<4>(info)};
 
-          try
-            {
-              callback(timerId,
-                       expireTime,
-                       scheduleTime,
-                       Clock::now());
-            }
-          catch(...)
-            {}
-        }
-      
-      // clear out expired timer list
-      expired.clear();
-     
-      // wait for an interval timer to expire
-      if(read(iFd_,&u64Expired,sizeof(u64Expired)) > 0)
-        {
-          std::unique_lock<std::mutex> lock(mutex_);
-
-          auto now = Clock::now();
-
-          if(!bRunning_)
-            {
-              break;
-            }
-
-          // an interval timer expired - iterate over all scheduled
-          // timers starting with the earliest and expire any that have
-          // expired. Stop iterating once you find a timer that is still 
-          // valid (in the future).
-          for(const auto & entry : timePointMap_)
-            {
-              const auto & timePoint = std::get<1>(entry.second);
-              
-              if(now >= timePoint)
-                {
-                  expired.push_back(std::move(entry.second));
-                }
-              else
-                {
-                  break;
-                }
-            }
-
-          // remove any expired timers from the timer stores and reschedule
-          // any that have a repeat interval
-          for(const auto & info : expired)
-            {
-              TimerId timerId{};
-              TimePoint expireTime{};
-              Duration interval{};
-              Callback callback{};
-
-              std::tie(timerId,expireTime,interval,callback,std::ignore) = info;
-              
-              timePointMap_.erase({expireTime,timerId});
-
-              timerIdMap_.erase(timerId);
-               
-              if(interval != Duration::zero())
-                {
-                  expireTime += interval;
-                  
-                  timePointMap_.insert(std::make_pair(std::make_pair(expireTime,timerId),
-                                                      std::make_tuple(timerId,
-                                                                      expireTime,
-                                                                      interval,
-                                                                      callback,
-                                                                      now)));
-                  
-                  timerIdMap_.insert(std::make_pair(timerId,expireTime));
-                }
-            }
-          
-          // reschedule the new earliest time, if one is present
-          schedule_i();
-        }
+      try
+      {
+        callback(timerId,
+                 expireTime,
+                 scheduleTime,
+                 Clock::now());
+      }
+      catch (...)
+      {
+      }
     }
+
+    // clear out expired timer list
+    expired.clear();
+
+    // wait for an interval timer to expire
+    if (read(iFd_, &u64Expired, sizeof(u64Expired)) > 0)
+    {
+      std::unique_lock<std::mutex> lock(mutex_);
+
+      auto now = Clock::now();
+
+      if (!bRunning_)
+      {
+        break;
+      }
+
+      // an interval timer expired - iterate over all scheduled
+      // timers starting with the earliest and expire any that have
+      // expired. Stop iterating once you find a timer that is still
+      // valid (in the future).
+      for (const auto &entry : timePointMap_)
+      {
+        const auto &timePoint = std::get<1>(entry.second);
+
+        if (now >= timePoint)
+        {
+          expired.push_back(std::move(entry.second));
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      // remove any expired timers from the timer stores and reschedule
+      // any that have a repeat interval
+      for (const auto &info : expired)
+      {
+        TimerId timerId{};
+        TimePoint expireTime{};
+        Duration interval{};
+        Callback callback{};
+
+        std::tie(timerId, expireTime, interval, callback, std::ignore) = info;
+
+        timePointMap_.erase({expireTime, timerId});
+
+        timerIdMap_.erase(timerId);
+
+        if (interval != Duration::zero())
+        {
+          expireTime += interval;
+
+          timePointMap_.insert(std::make_pair(std::make_pair(expireTime, timerId),
+                                              std::make_tuple(timerId,
+                                                              expireTime,
+                                                              interval,
+                                                              callback,
+                                                              now)));
+
+          timerIdMap_.insert(std::make_pair(timerId, expireTime));
+        }
+      }
+
+      // reschedule the new earliest time, if one is present
+      schedule_i();
+    }
+  }
 }
+#endif

@@ -754,7 +754,17 @@ int main(int argc, char * argv[])
 
                                                       xmlFree(pDuration);
 
-                                                      segments.push_back({frequency,duration,offset});
+                                                      xmlChar * pPower = xmlGetProp(pSegmentNode,BAD_CAST "power");
+                                                      double powerDbm = 0;
+                                                      if (pPower)
+                                                      {
+                                                        powerDbm =
+                                                          EMANE::Utils::ParameterConvert(reinterpret_cast<const char *>(pPower)).toDouble();
+                                                        xmlFree(pPower);
+                                                      }
+
+                                                      //segments.push_back({frequency,duration,offset});
+                                                      segments.push_back({frequency, powerDbm, duration,offset});
                                                     }
                                                 }
                                             }

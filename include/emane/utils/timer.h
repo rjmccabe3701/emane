@@ -104,6 +104,10 @@ namespace EMANE
       TimerId scheduleInterval(Function fn,
                                const TimePoint & absoluteTimePoint,
                                const Duration & interval);
+
+#ifdef OFFLINE_TEST_TIMER
+      void runTo(const TimePoint& absoluteTimePoint);
+#endif
       
     private:
       using Callback = std::function<void(TimerId,
@@ -119,10 +123,13 @@ namespace EMANE
       TimerIdMap timerIdMap_;
       bool bRunning_;
       TimerId timerId_;
+#ifdef OFFLINE_TEST_TIMER
+      TimerId schedule(Callback,const TimePoint &,const Duration &);
+      std::mutex mutex_;
+#else 
       int iFd_;
       std::thread thread_;
       std::mutex mutex_;
-      
       void scheduler();
       
       TimerId schedule(Callback,const TimePoint &,const Duration &);
@@ -130,6 +137,7 @@ namespace EMANE
       void schedule_i();
 
       void cancel_i();
+#endif
 
       Timer(const Timer &) = delete;
 

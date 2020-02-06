@@ -5,7 +5,7 @@ AC_COPYRIGHT([
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
  are met:
- 
+
  * Redistributions of source code must retain the above copyright
    notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright
@@ -15,7 +15,7 @@ AC_COPYRIGHT([
  * Neither the name of Adjacent Link LLC nor the names of its
    contributors may be used to endorse or promote products derived
    from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -40,7 +40,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([])
 
-: ${CXXFLAGS="-g -O3 -Wall -Wextra"}
+: ${CXXFLAGS="-g -O0 -Wall -Wextra"}
 
 AC_PROG_CXX
 
@@ -73,6 +73,9 @@ AC_ARG_WITH([testcases],
            [  --with-testcases        add testcases to build (off)],
            [AM_CONDITIONAL(WITH_TESTCASES,true)],
            [AM_CONDITIONAL(WITH_TESTCASES,false)])
+
+AC_ARG_WITH([offline_test_timer],
+           [  --with-offline_test_timer        stop the madness (off)])
 
 
 AC_ARG_VAR([pcap_CFLAGS],[C compiler flags for libpcap])
@@ -129,12 +132,18 @@ fi
 # options for use with debug
 if test "$with_debug" = "yes"
 then
-AX_CHECK_COMPILE_FLAG([-Og],
- [CXXFLAGS="$CXXFLAGS -g -Og"],
+AX_CHECK_COMPILE_FLAG([-O0],
+ [CXXFLAGS="$CXXFLAGS -g -O0"],
  [CXXFLAGS="$CXXFLAGS -g -O0"])
-AX_CHECK_LINK_FLAG([-Og],
- [LDFLAGS="$LDFLAGS -g -Og"],
+AX_CHECK_LINK_FLAG([-O0],
+ [LDFLAGS="$LDFLAGS -g -O0"],
  [LDFLAGS="$LDFLAGS -g -O0"])
+fi
+
+if test "$with_offline_test_timer" = "yes"
+then
+ AC_MSG_NOTICE("Enabling offline test timer")
+   AC_DEFINE(OFFLINE_TEST_TIMER)
 fi
 
 # options for use with verbose logging
@@ -189,7 +198,7 @@ AC_SUBST(PACKAGE_VERSION_CODE,
  [`echo $PACKAGE_VERSION | awk '/^([[0-9]]+)\.([[0-9]]+)\.([[0-9]]+)$/ { split($0, m, "."); printf("%d", (m[[1]]*(2^16)) + (m[[2]]*(2^8)) + m[[3]]);}'`])
 
 AC_OUTPUT(
- Makefile 
+ Makefile
  include/emane/Makefile
  include/emane/utils/Makefile
  include/emane/controls/Makefile
@@ -201,7 +210,7 @@ AC_OUTPUT(
  include/emane/models/tdma/Makefile
  include/emane/version.h
  src/Makefile
- src/libemanexmlparser/Makefile 
+ src/libemanexmlparser/Makefile
  src/libemane/Makefile
  src/libemane/libemane.pc
  src/applications/Makefile

@@ -89,6 +89,12 @@ namespace EMANE
                           const TimePoint & timePoint,
                           const Duration & interval = Duration::zero());
 
+#ifdef OFFLINE_TEST_TIMER
+      void runTo(const TimePoint& absoluteTimePoint)
+      {
+        timer_.runTo(absoluteTimePoint);
+      }
+#endif
 
   protected:
     TimerService() = default;
