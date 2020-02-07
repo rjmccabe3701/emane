@@ -145,7 +145,6 @@ libemane_la_SOURCES =                         \
  pathlossevent.cc                             \
  pathlosseventformatter.cc                    \
  phylayer.cc                                  \
- phylayerfactory.cc                           \
  platformservice.cc                           \
  positionformatter.cc                         \
  positionneuformatter.cc                      \
@@ -258,9 +257,7 @@ libemane_la_SOURCES =                         \
  otastatisticpublisher.h                      \
  otauser.h                                    \
  phylayer.h                                   \
- phylayerfactory.h                            \
  platformservice.h                            \
- radioservice.h                               \
  registrarproxy.h                             \
  requestmessagehandler.h                      \
  socket.h                                     \

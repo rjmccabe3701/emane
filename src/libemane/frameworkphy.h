@@ -57,7 +57,7 @@ namespace EMANE
   public:
     FrameworkPHY(NEMId id,
                  PlatformServiceProvider* pPlatformService,
-                 SpectrumMonitor * pSpectrumMonitor);
+                 RadioServiceProvider * pRadioService);
 
     ~FrameworkPHY();
 

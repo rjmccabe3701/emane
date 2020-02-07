@@ -26,6 +26,7 @@ emaneinc_HEADERS =                            \
  positionutils.h                              \
  precomputedpropagationmodelalgorithm.h       \
  propagationmodelalgorithm.h                  \
+ radioservice.h                               \
  receivepowertablepublisher.h                 \
  spectrummonitor.h                            \
  tworaypropagationmodelalgorithm.h            \
