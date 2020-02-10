@@ -51,13 +51,13 @@ namespace EMANE
   public:
     /**
      * Creates a ConfigurationRegistrarProxy.
-     * 
+     *
      * @param service Reference to the configuration service
      * @param buildId BUild id associated with the proxy
      */
     ConfigurationRegistrarProxy(ConfigurationService & service,
                                 BuildId buildId);
-    
+
     void registerValidator(ConfigurationValidator validator) override;
 
   private:
@@ -74,7 +74,7 @@ namespace EMANE
                             std::size_t minOccurs,
                             std::size_t maxOccurs,
                             const std::string & sRegexPattern) override;
-    
+
     void registerNonNumericAny(const std::string & sName,
                                Any::Type type,
                                const ConfigurationProperties & properties,
@@ -84,7 +84,7 @@ namespace EMANE
                                std::size_t maxOccurs,
                                const std::string & sRegexPattern) override;
 
-    
+
   };
 }
 

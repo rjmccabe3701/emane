@@ -46,7 +46,7 @@ AC_PROG_CXX
 
 AC_PROG_CXXCPP
 
-AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
+# AX_CXX_COMPILE_STDCXX_17([noext],[mandatory])
 
 AC_PROG_INSTALL
 
@@ -88,7 +88,7 @@ AC_CHECK_HEADER(sys/timerfd.h,
  [AC_MSG_ERROR("Missing sys/timerfd.h header")])
 
 
-LDFLAGS="$LDFLAGS -lpthread -ldl"
+LDFLAGS="$LDFLAGS -lpthread -ldl -std=c++17"
 
 _cppflags=${CPPFLAGS}
 _ldflags=${LDFLAGS}
@@ -122,7 +122,7 @@ AC_DEFINE([__BIG_ENDIAN],4321,[for the places where it is not defined])
 # options for use with gprof
 if test "$with_profile" = "yes"
 then
-CXXFLAGS="$CXXFLAGS -g -pg"
+CXXFLAGS="$CXXFLAGS -std=c++17 -g -pg"
 LDFLAGS="$LDFLAGS -g -pg"
 fi
 
@@ -130,11 +130,11 @@ fi
 if test "$with_debug" = "yes"
 then
 AX_CHECK_COMPILE_FLAG([-Og],
- [CXXFLAGS="$CXXFLAGS -g -Og"],
- [CXXFLAGS="$CXXFLAGS -g -O0"])
+ [CXXFLAGS="$CXXFLAGS -std=c++17 -g -O0"],
+ [CXXFLAGS="$CXXFLAGS -std=c++17 -g -O0"])
 AX_CHECK_LINK_FLAG([-Og],
- [LDFLAGS="$LDFLAGS -g -Og"],
- [LDFLAGS="$LDFLAGS -g -O0"])
+ [LDFLAGS="$LDFLAGS -std=c++17 -g -O0"],
+ [LDFLAGS="$LDFLAGS -std=c++17 -g -O0"])
 fi
 
 # options for use with verbose logging
