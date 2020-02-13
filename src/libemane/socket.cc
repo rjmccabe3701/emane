@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "socket.h"
+#include "emane/utils/socket.h"
 #include "socketexception.h"
 
 #include <unistd.h>

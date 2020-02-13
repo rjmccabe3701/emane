@@ -31,8 +31,8 @@
  */
 
 #include "emane/registrarproxy.h"
-#include "configurationservice.h"
-#include "statisticservice.h"
+#include "emane/configurationservice.h"
+#include "emane/statisticservice.h"
 
 EMANE::RegistrarProxy::RegistrarProxy(BuildId buildId):
   configurationRegistrarProxy_{*ConfigurationServiceSingleton::instance(),buildId},

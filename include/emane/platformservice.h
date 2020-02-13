@@ -37,8 +37,8 @@
 
 #include "emane/componenttypes.h"
 #include "emane/platformserviceprovider.h"
-#include "timerserviceproxy.h"
-#include "eventserviceproxy.h"
+#include "emane/eventserviceproxy.h"
+#include "emane/timerserviceproxy.h"
 
 #include <memory>
 

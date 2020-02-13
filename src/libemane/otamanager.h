@@ -36,9 +36,9 @@
 
 #include "otaprovider.h"
 #include "emane/inetaddr.h"
-#include "multicastsocket.h"
+#include "emane/utils/multicastsocket.h"
+#include "emane/eventstatisticpublisher.h"
 #include "otastatisticpublisher.h"
-#include "eventstatisticpublisher.h"
 
 #include "emane/utils/singleton.h"
 

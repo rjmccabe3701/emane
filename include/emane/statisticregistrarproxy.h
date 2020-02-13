@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - Adjacent Link LLC, Bridgewater, New Jersey
+ * Copyright (c) 2013 - Adjacent Link LLC, Bridgewater, New Jersey
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,47 +30,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef EMANEMULTICASTSOCKET_HEADER_
-#define EMANEMULTICASTSOCKET_HEADER_
+#ifndef EMANESTATISTICREGISTRARPROXY_HEADER_
+#define EMANESTATISTICREGISTRARPROXY_HEADER_
 
-#include "socket.h"
-#include "emane/inetaddr.h"
-
-#include <string>
-#include <cstdint>
-#include <sys/uio.h>
+#include "emane/statisticregistrar.h"
+#include "emane/statisticservice.h"
 
 namespace EMANE
 {
-  class MulticastSocket: public Socket
+  class StatisticRegistrarProxy : public StatisticRegistrar
   {
   public:
-    MulticastSocket();
-
-    MulticastSocket(const INETAddr & address,
-                    bool bReuseAddress = false,
-                    const std::string & sDevice = "",
-                    std::uint8_t u8TTL = 1,
-                    bool bLoop = false);
-
-    ~MulticastSocket();
-
-    void open(const INETAddr & address,
-              bool bReuseAddress = false,
-              const std::string & sDevice = "",
-              std::uint8_t u8TTL = 1,
-              bool bLoop = false);
-
-    ssize_t send(const iovec *iov, int iovcnt, int flags=0) const;
-
-    ssize_t recv(void * buf,
-                 size_t len,
-                 int flags=0);
-
+    StatisticRegistrarProxy(StatisticService & service,
+                            BuildId buildId);
 
   private:
-    INETAddr addr_;
+    StatisticService & service_;
+    BuildId buildId_;
+
+    void registerStatistic(const std::string & sName,
+                           Any::Type type,
+                           const StatisticProperties & properties,
+                           const std::string & sDescription,
+                           Statistic * pStatitic) override;
+
+    void registerTablePublisher(const std::string & sName,
+                                const StatisticProperties & properties,
+                                const std::string & sDescription,
+                                StatisticTablePublisher * pStatiticTablePublisher,
+                                std::function<void(StatisticTablePublisher *)> clearFunc) override;
   };
 }
 
-#endif // EMANEMULTICASTSOCKET_HEADER_
+#endif // EMANESTATISTICREGISTRARPROXY_HEADER_

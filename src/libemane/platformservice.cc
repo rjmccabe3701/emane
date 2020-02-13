@@ -34,7 +34,7 @@
 
 
 #include "logservice.h"
-#include "eventservice.h"
+#include "emane/eventservice.h"
 #include "emane/platformservice.h"
 #include "emane/platformserviceuser.h"
 

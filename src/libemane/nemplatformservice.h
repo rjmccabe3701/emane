@@ -35,9 +35,9 @@
 
 #include "emane/componenttypes.h"
 #include "emane/platformserviceprovider.h"
+#include "emane/eventserviceproxy.h"
 #include "nemqueuedlayer.h"
 #include "nemtimerserviceproxy.h"
-#include "eventserviceproxy.h"
 
 #include <memory>
 

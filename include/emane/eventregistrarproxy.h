@@ -30,36 +30,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef EMANESTATISTICREGISTRARPROXY_HEADER_
-#define EMANESTATISTICREGISTRARPROXY_HEADER_
+#ifndef EMANEEVENTREGISTRARPROXY_HEADER_
+#define EMANEEVENTREGISTRARPROXY_HEADER_
 
-#include "emane/statisticregistrar.h"
-#include "statisticservice.h"
+#include "emane/eventregistrar.h"
+#include "emane/eventservice.h"
 
 namespace EMANE
 {
-  class StatisticRegistrarProxy : public StatisticRegistrar
+  class EventRegistrarProxy : public EventRegistrar
   {
   public:
-    StatisticRegistrarProxy(StatisticService & service,
-                            BuildId buildId);
-    
-  private:
-    StatisticService & service_;
-    BuildId buildId_;
-    
-    void registerStatistic(const std::string & sName,
-                           Any::Type type,
-                           const StatisticProperties & properties,
-                           const std::string & sDescription,
-                           Statistic * pStatitic) override;
+    EventRegistrarProxy(EventService & service,
+                        BuildId buildId);
 
-    void registerTablePublisher(const std::string & sName,
-                                const StatisticProperties & properties,
-                                const std::string & sDescription,
-                                StatisticTablePublisher * pStatiticTablePublisher,
-                                std::function<void(StatisticTablePublisher *)> clearFunc) override;
+    void registerEvent(EventId eventId) override;
+
+  private:
+    EventService & service_;
+    BuildId buildId_;
   };
 }
 
-#endif // EMANESTATISTICREGISTRARPROXY_HEADER_
+#endif // EMANEEVENTREGISTRARPROXY_HEADER_

@@ -196,8 +196,6 @@ libemane_la_SOURCES =                         \
  boundarymessagemanager.h                     \
  buildidservice.h                             \
  configurationqueryhandler.h                  \
- configurationregistrarproxy.h                \
- configurationservice.h                       \
  configurationupdatehandler.h                 \
  controlmessageserializerexception.h          \
  controlmessageserializer.h                   \
@@ -213,11 +211,7 @@ libemane_la_SOURCES =                         \
  eventgeneratorfactory.h                      \
  eventgeneratorfactorymanager.h               \
  eventgeneratormanagerimpl.h                  \
- eventregistrarproxy.h                        \
  eventserviceexception.h                      \
- eventservice.h                               \
- eventserviceproxy.h                          \
- eventstatisticpublisher.h                    \
  frameworkphy.h                               \
  layerfactory.h                               \
  layerfactory.inl                             \
@@ -230,7 +224,6 @@ libemane_la_SOURCES =                         \
  maclayer.h                                   \
  main.h                                       \
  manifestqueryhandler.h                       \
- multicastsocket.h                            \
  nemimpl.h                                    \
  nemlayerstack.h                              \
  nemlayerstateconfigured.h                    \
@@ -258,19 +251,15 @@ libemane_la_SOURCES =                         \
  otauser.h                                    \
  phylayer.h                                   \
  requestmessagehandler.h                      \
- socket.h                                     \
  socketexception.h                            \
  shimlayer.h                                  \
  statisticclearupdatehandler.h                \
  statisticqueryhandler.h                      \
- statisticregistrarproxy.h                    \
- statisticservice.h                           \
  statistictableclearupdatehandler.h           \
  statistictablequeryhandler.h                 \
  timerserviceexception.h                      \
  timerservice.h                               \
  timerservice.inl                             \
- timerserviceproxy.h                          \
  transportadapterimpl.h                       \
  transportfactory.h                           \
  transportfactorymanager.h                    \

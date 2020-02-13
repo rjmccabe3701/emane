@@ -33,7 +33,7 @@
 #ifndef EMANEDATAGRAMSOCKET_HEADER_
 #define EMANEDATAGRAMSOCKET_HEADER_
 
-#include "socket.h"
+#include "emane/utils/socket.h"
 #include "emane/inetaddr.h"
 
 #include <string>

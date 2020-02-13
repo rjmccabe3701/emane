@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "eventserviceproxy.h"
-#include "eventservice.h"
+#include "emane/eventserviceproxy.h"
+#include "emane/eventservice.h"
 
 EMANE::EventServiceProxy::EventServiceProxy():
   buildId_{}{}
@@ -41,7 +41,7 @@ void EMANE::EventServiceProxy::setBuildId(BuildId buildId)
   buildId_ = buildId;
 }
 
-void EMANE::EventServiceProxy::sendEvent(NEMId nemId, 
+void EMANE::EventServiceProxy::sendEvent(NEMId nemId,
                                          const Event & event)
 {
   EventServiceSingleton::instance()->sendEvent(buildId_,
@@ -49,8 +49,8 @@ void EMANE::EventServiceProxy::sendEvent(NEMId nemId,
                                                event);
 }
 
-void EMANE::EventServiceProxy::sendEvent(NEMId nemId, 
-                                         EventId eventId, 
+void EMANE::EventServiceProxy::sendEvent(NEMId nemId,
+                                         EventId eventId,
                                          const Serialization & serialization)
 {
   EventServiceSingleton::instance()->sendEvent(buildId_,

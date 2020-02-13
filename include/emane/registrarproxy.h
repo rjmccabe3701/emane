@@ -34,9 +34,9 @@
 #define EMANEREGISTRARPROXY_HEADER_
 
 #include "emane/registrar.h"
-#include "configurationregistrarproxy.h"
-#include "statisticregistrarproxy.h"
-#include "eventregistrarproxy.h"
+#include "emane/configurationregistrarproxy.h"
+#include "emane/statisticregistrarproxy.h"
+#include "emane/eventregistrarproxy.h"
 
 namespace EMANE
 {
@@ -50,7 +50,7 @@ namespace EMANE
     StatisticRegistrar & statisticRegistrar() override;
 
     EventRegistrar & eventRegistrar() override;
-    
+
   private:
     ConfigurationRegistrarProxy configurationRegistrarProxy_;
     StatisticRegistrarProxy statisticRegistrarProxy_;

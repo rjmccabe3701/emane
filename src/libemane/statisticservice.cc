@@ -31,7 +31,7 @@
  */
 
 #include "emane/registrarexception.h"
-#include "statisticservice.h"
+#include "emane/statisticservice.h"
 
 #include <iterator>
 
@@ -54,13 +54,13 @@ void EMANE::StatisticService::registerStatistic(BuildId buildId,
       sDescription};
 
   std::unique_ptr<Statistic> pStat{pStatistic};
-    
+
   auto iter = buildIdStatisticStore_.find(buildId);
-    
+
   if(iter != buildIdStatisticStore_.end())
     {
       auto & store = iter->second;
-      
+
       if(!store.insert(std::make_pair(sName,std::make_pair(std::move(pStat),std::move(info)))).second)
         {
           throw makeException<RegistrarException>("Statistic already registered: %s",
@@ -91,13 +91,13 @@ void EMANE::StatisticService::registerTable(BuildId buildId,
   StatisticTableInfo info{sName,properties,sDescription};
 
   std::unique_ptr<StatisticTablePublisher> pTable{pStatisticTablePublisher};
-    
+
   auto iter = buildIdTableStore_.find(buildId);
-    
+
   if(iter != buildIdTableStore_.end())
     {
       auto & store = iter->second;
-      
+
       if(!store.insert(std::make_pair(sName,std::make_tuple(std::move(pTable),std::move(info),std::move(clearFunc)))).second)
         {
           throw makeException<RegistrarException>("Statistic table already registered: %s",
@@ -159,7 +159,7 @@ EMANE::StatisticService::queryStatistic(BuildId buildId,
     }
 
   return values;
-  
+
 }
 
 void
@@ -188,7 +188,7 @@ EMANE::StatisticService::clearStatistic(BuildId buildId,
       else
         {
           std::vector<Statistic *> statsToClear;
-          
+
           // store references to all the requested statistics to clear
           // this a transactional API call so either all requested items
           // are valid names and clearable or none will be cleared
@@ -258,11 +258,11 @@ EMANE::StatisticService::queryTable(BuildId buildId,
                    [&store,&values](const std::string & s)
                    {
                      auto iter = store.find(s);
-                     
+
                      if(iter != store.end())
                        {
                          auto pTable = std::get<0>(iter->second).get();
-                         
+
                          values.insert(std::make_pair(s,
                                                       std::make_pair(pTable->getLabels(),
                                                                      pTable->getValues())));
@@ -277,20 +277,20 @@ EMANE::StatisticService::queryTable(BuildId buildId,
     }
 
   return values;
-  
+
 }
 
 
 EMANE::StatisticManifest EMANE::StatisticService::getStatisticManifest(BuildId buildId) const
 {
   StatisticManifest manifest;
-  
+
   auto iter = buildIdStatisticStore_.find(buildId);
 
   if(iter != buildIdStatisticStore_.end())
     {
-      std::transform(iter->second.begin(), 
-                     iter->second.end(), 
+      std::transform(iter->second.begin(),
+                     iter->second.end(),
                      std::back_inserter(manifest),
                      std::bind(&StatisticStore::value_type::second_type::second,
                                std::bind(&StatisticStore::value_type::second,
@@ -304,7 +304,7 @@ EMANE::StatisticManifest EMANE::StatisticService::getStatisticManifest(BuildId b
 EMANE::StatisticTableManifest EMANE::StatisticService::getTableManifest(BuildId buildId) const
 {
   StatisticTableManifest manifest;
-  
+
   auto iter = buildIdTableStore_.find(buildId);
 
   if(iter != buildIdTableStore_.end())
@@ -333,7 +333,7 @@ EMANE::StatisticService::clearTable(BuildId buildId,
       // this a transactional API call so either all requested items
       // are valid names and clearable or none will be cleared
       std::vector<std::function<void()>> tablesToClear;
-      
+
       auto & store = iter->second;
 
       if(names.empty())

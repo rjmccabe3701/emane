@@ -31,7 +31,7 @@
  */
 
 #include "emane/application/statisticcontroller.h"
-#include "statisticservice.h"
+#include "emane/statisticservice.h"
 
 EMANE::StatisticManifest
 EMANE::Application::StatisticController::getStatisticManifest(BuildId buildId)

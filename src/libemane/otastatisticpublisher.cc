@@ -31,7 +31,7 @@
  */
 
 #include "otastatisticpublisher.h"
-#include "statisticregistrarproxy.h"
+#include "emane/statisticregistrarproxy.h"
 
 // specialized hash for PacketCountTable
 namespace std

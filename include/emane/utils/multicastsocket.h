@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - Adjacent Link LLC, Bridgewater, New Jersey
+ * Copyright (c) 2015 - Adjacent Link LLC, Bridgewater, New Jersey
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,26 +30,47 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef EMANEEVENTREGISTRARPROXY_HEADER_
-#define EMANEEVENTREGISTRARPROXY_HEADER_
+#ifndef EMANEMULTICASTSOCKET_HEADER_
+#define EMANEMULTICASTSOCKET_HEADER_
 
-#include "emane/eventregistrar.h"
-#include "eventservice.h"
+#include "emane/utils/socket.h"
+#include "emane/inetaddr.h"
+
+#include <string>
+#include <cstdint>
+#include <sys/uio.h>
 
 namespace EMANE
 {
-  class EventRegistrarProxy : public EventRegistrar
+  class MulticastSocket: public Socket
   {
   public:
-    EventRegistrarProxy(EventService & service,
-                        BuildId buildId);
+    MulticastSocket();
 
-    void registerEvent(EventId eventId) override;
-    
+    MulticastSocket(const INETAddr & address,
+                    bool bReuseAddress = false,
+                    const std::string & sDevice = "",
+                    std::uint8_t u8TTL = 1,
+                    bool bLoop = false);
+
+    ~MulticastSocket();
+
+    void open(const INETAddr & address,
+              bool bReuseAddress = false,
+              const std::string & sDevice = "",
+              std::uint8_t u8TTL = 1,
+              bool bLoop = false);
+
+    ssize_t send(const iovec *iov, int iovcnt, int flags=0) const;
+
+    ssize_t recv(void * buf,
+                 size_t len,
+                 int flags=0);
+
+
   private:
-    EventService & service_;
-    BuildId buildId_;
+    INETAddr addr_;
   };
 }
 
-#endif // EMANEEVENTREGISTRARPROXY_HEADER_
+#endif // EMANEMULTICASTSOCKET_HEADER_

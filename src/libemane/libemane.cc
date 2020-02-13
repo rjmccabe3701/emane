@@ -34,10 +34,11 @@
 #include "google/protobuf/stubs/common.h"
 
 #include "buildidservice.h"
-#include "configurationservice.h"
+#include "emane/configurationservice.h"
+#include "emane/eventservice.h"
+#include "emane/statisticservice.h"
 #include "eventagentfactorymanager.h"
 #include "eventgeneratorfactorymanager.h"
-#include "eventservice.h"
 #include "layerfactorymanager.h"
 #include "logservice.h"
 #include "nemlayerstateconfigured.h"
@@ -47,7 +48,6 @@
 #include "nemlayerstatestopped.h"
 #include "nemlayerstateuninitialized.h"
 #include "otamanager.h"
-#include "statisticservice.h"
 #include "timerservice.h"
 #include "transportfactorymanager.h"
 

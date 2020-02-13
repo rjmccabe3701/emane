@@ -31,7 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "configurationservice.h"
+#include "emane/configurationservice.h"
 #include "emane/registrarexception.h"
 
 #include <pcre.h>

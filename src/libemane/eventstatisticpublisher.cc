@@ -30,8 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "eventstatisticpublisher.h"
-#include "statisticregistrarproxy.h"
+#include "emane/eventstatisticpublisher.h"
+#include "emane/statisticregistrarproxy.h"
 
 // specialized hash for EventCountTable
 namespace std

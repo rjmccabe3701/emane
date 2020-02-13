@@ -42,8 +42,8 @@
 #include "emane/inetaddr.h"
 #include "emane/serializable.h"
 #include "emane/utils/singleton.h"
-#include "multicastsocket.h"
-#include "eventstatisticpublisher.h"
+#include "emane/utils/multicastsocket.h"
+#include "emane/eventstatisticpublisher.h"
 
 #include <map>
 #include <tuple>

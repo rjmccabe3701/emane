@@ -31,7 +31,7 @@
  */
 
 #include "emane/application/configurationcontroller.h"
-#include "configurationservice.h"
+#include "emane/configurationservice.h"
 
 EMANE::ConfigurationUpdate
 EMANE::Application::ConfigurationController::buildUpdates(BuildId buildId,

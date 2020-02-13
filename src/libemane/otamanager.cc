@@ -36,11 +36,11 @@
 #include "logservice.h"
 #include "controlmessageserializer.h"
 #include "otaexception.h"
-#include "eventservice.h"
 #include "otaheader.pb.h"
 #include "event.pb.h"
 #include "socketexception.h"
 
+#include "emane/eventservice.h"
 #include "emane/net.h"
 #include "emane/utils/threadutils.h"
 #include "emane/controls/otatransmittercontrolmessage.h"

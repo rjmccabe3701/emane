@@ -33,7 +33,7 @@
 #include "statistictableclearupdatehandler.h"
 #include "emane/serializationexception.h"
 #include "emane/registrarexception.h"
-#include "statisticservice.h"
+#include "emane/statisticservice.h"
 
 std::string
 EMANE::ControlPort::StatisticTableClearUpdateHandler::

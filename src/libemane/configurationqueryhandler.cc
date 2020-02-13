@@ -32,7 +32,7 @@
  */
 
 #include "configurationqueryhandler.h"
-#include "configurationservice.h"
+#include "emane/configurationservice.h"
 #include "emane/serializationexception.h"
 #include "emane/registrarexception.h"
 #include "anyutils.h"

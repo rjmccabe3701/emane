@@ -35,14 +35,14 @@
 #include <cstdlib>
 
 #include "buildidservice.h"
-#include "configurationservice.h"
-#include "eventservice.h"
+#include "emane/configurationservice.h"
+#include "emane/eventservice.h"
 #include "frameworkphy.h"
 #include "emane/registrarproxy.h"
 #include "emane/platformservice.h"
 #include "emane/models/frameworkphy/antennaprofilemanifest.h"
 #include "emane/models/frameworkphy/radioservice.h"
-#include "statisticservice.h"
+#include "emane/statisticservice.h"
 
 #include "emane/configurationupdate.h"
 #include "emane/utils/parameterconvert.h"

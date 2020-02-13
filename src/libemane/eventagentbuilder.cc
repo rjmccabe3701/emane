@@ -36,11 +36,11 @@
 #include "emane/buildexception.h"
 #include "emane/platformservice.h"
 #include "emane/registrarproxy.h"
+#include "emane/eventservice.h"
+#include "emane/timerserviceproxy.h"
 #include "eventagentfactorymanager.h"
 #include "eventagentmanagerimpl.h"
 #include "logservice.h"
-#include "timerserviceproxy.h"
-#include "eventservice.h"
 #include "buildidservice.h"
 #include "nopfiledescriptorservice.h"
 

@@ -32,7 +32,7 @@
 
 #include "nemplatformservice.h"
 #include "logservice.h"
-#include "eventservice.h"
+#include "emane/eventservice.h"
 
 EMANE::NEMPlatformService::NEMPlatformService():
   pNEMQueuedLayer_{}{}

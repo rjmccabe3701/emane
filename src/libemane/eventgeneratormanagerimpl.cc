@@ -32,10 +32,10 @@
  */
 #include "eventgeneratormanagerimpl.h"
 #include "logservice.h"
-#include "eventservice.h"
 #include "timerservice.h"
 #include "eventserviceexception.h"
 
+#include "emane/eventservice.h"
 #include "emane/configureexception.h"
 #include "emane/startexception.h"
 

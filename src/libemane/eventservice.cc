@@ -31,12 +31,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "eventservice.h"
+#include "emane/eventservice.h"
 #include "emane/registrarexception.h"
 #include "eventserviceexception.h"
 #include "event.pb.h"
 #include "logservice.h"
-#include "eventservice.h"
 #include "socketexception.h"
 
 #include "emane/utils/vectorio.h"

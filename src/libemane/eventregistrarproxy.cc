@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "eventregistrarproxy.h"
+#include "emane/eventregistrarproxy.h"
 
 EMANE::EventRegistrarProxy::EventRegistrarProxy(EventService & service,
                                                 BuildId buildId):

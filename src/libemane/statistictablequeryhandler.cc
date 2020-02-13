@@ -31,7 +31,7 @@
  */
 
 #include "statistictablequeryhandler.h"
-#include "statisticservice.h"
+#include "emane/statisticservice.h"
 #include "emane/serializationexception.h"
 #include "emane/registrarexception.h"
 #include "anyutils.h"

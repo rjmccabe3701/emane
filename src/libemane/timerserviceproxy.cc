@@ -31,7 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "timerserviceproxy.h"
+#include "emane/timerserviceproxy.h"
 #include "timerservice.h"
 #include "logservice.h"
 

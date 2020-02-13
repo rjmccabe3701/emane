@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "configurationregistrarproxy.h"
+#include "emane/configurationregistrarproxy.h"
 
 EMANE::ConfigurationRegistrarProxy::ConfigurationRegistrarProxy(ConfigurationService & service,
                                                                 BuildId buildId):

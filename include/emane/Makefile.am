@@ -27,6 +27,8 @@ emaneinc_HEADERS =                       \
  configurationproperties.h               \
  configurationregistrar.h                \
  configurationregistrar.inl              \
+ configurationregistrarproxy.h           \
+ configurationservice.h                  \
  configurationupdate.h                   \
  configureexception.h                    \
  constants.h                             \
@@ -39,8 +41,12 @@ emaneinc_HEADERS =                       \
  eventgenerator.h                        \
  event.h                                 \
  eventregistrar.h                        \
+ eventregistrarproxy.h                   \
+ eventservice.h                          \
  eventserviceprovider.h                  \
+ eventserviceproxy.h                     \
  eventserviceuser.h                      \
+ eventstatisticpublisher.h               \
  exception.h                             \
  filedescriptorserviceprovider.h         \
  filedescriptorserviceprovider.inl       \
@@ -97,6 +103,8 @@ emaneinc_HEADERS =                       \
  statisticproperties.h                   \
  statisticregistrar.h                    \
  statisticregistrar.inl                  \
+ statisticregistrarproxy.h               \
+ statisticservice.h                      \
  statistictableexception.h               \
  statistictable.h                        \
  statistictableinfo.h                    \
@@ -105,6 +113,7 @@ emaneinc_HEADERS =                       \
  statistictablepublisher.h               \
  timerserviceprovider.h                  \
  timerserviceprovider.inl                \
+ timerserviceproxy.h                     \
  timerserviceuser.h                      \
  transmitter.h                           \
  transmitter.inl                         \

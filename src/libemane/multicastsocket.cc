@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "multicastsocket.h"
+#include "emane/utils/multicastsocket.h"
 #include "socketexception.h"
 #include <cstring>
 #include <arpa/inet.h>

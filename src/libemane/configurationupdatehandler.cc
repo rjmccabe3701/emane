@@ -31,7 +31,7 @@
  */
 
 #include "configurationupdatehandler.h"
-#include "configurationservice.h"
+#include "emane/configurationservice.h"
 #include "emane/serializationexception.h"
 #include "anyutils.h"
 

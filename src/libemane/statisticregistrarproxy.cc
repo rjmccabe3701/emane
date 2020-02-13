@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "statisticregistrarproxy.h"
+#include "emane/statisticregistrarproxy.h"
 
 EMANE::StatisticRegistrarProxy::StatisticRegistrarProxy(StatisticService & service,
                                                         BuildId buildId):
