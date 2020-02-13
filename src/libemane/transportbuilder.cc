@@ -34,6 +34,7 @@
 
 #include "emane/application/transportbuilder.h"
 #include "emane/buildexception.h"
+#include "emane/registrarproxy.h"
 #include "transportmanagerimpl.h"
 #include "transportadapterimpl.h"
 #include "transportfactorymanager.h"
@@ -42,7 +43,6 @@
 #include "eventservice.h"
 #include "nemplatformservice.h"
 #include "buildidservice.h"
-#include "registrarproxy.h"
 #include "transportlayer.h"
 #include "nemstatefullayer.h"
 

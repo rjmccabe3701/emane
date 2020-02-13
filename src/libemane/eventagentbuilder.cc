@@ -34,14 +34,14 @@
 
 #include "emane/application/eventagentbuilder.h"
 #include "emane/buildexception.h"
+#include "emane/platformservice.h"
+#include "emane/registrarproxy.h"
 #include "eventagentfactorymanager.h"
 #include "eventagentmanagerimpl.h"
 #include "logservice.h"
 #include "timerserviceproxy.h"
 #include "eventservice.h"
-#include "platformservice.h"
 #include "buildidservice.h"
-#include "registrarproxy.h"
 #include "nopfiledescriptorservice.h"
 
 EMANE::Application::EventAgentBuilder::EventAgentBuilder(){}

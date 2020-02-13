@@ -40,13 +40,13 @@
 #include "emane/application/configurationcontroller.h"
 
 #include "emane/exception.h"
+#include "emane/registrarproxy.h"
 #include "manifest.h"
 #include "configurationloader.h"
 #include "nemmanagerimpl.h"
 #include "transportmanagerimpl.h"
 #include "eventgeneratormanagerimpl.h"
 #include "eventagentmanagerimpl.h"
-#include "registrarproxy.h"
 #include "buildidservice.h"
 #include "otamanager.h"
 #include <sstream>

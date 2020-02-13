@@ -34,12 +34,12 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "platformservice.h"
 #include "buildidservice.h"
 #include "configurationservice.h"
-#include "registrarproxy.h"
 #include "eventservice.h"
 #include "frameworkphy.h"
+#include "emane/registrarproxy.h"
+#include "emane/platformservice.h"
 #include "emane/models/frameworkphy/antennaprofilemanifest.h"
 #include "emane/models/frameworkphy/radioservice.h"
 #include "statisticservice.h"

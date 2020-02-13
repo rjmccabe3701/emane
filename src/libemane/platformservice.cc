@@ -33,9 +33,9 @@
  */
 
 
-#include "platformservice.h"
 #include "logservice.h"
 #include "eventservice.h"
+#include "emane/platformservice.h"
 #include "emane/platformserviceuser.h"
 
 EMANE::PlatformService::PlatformService()

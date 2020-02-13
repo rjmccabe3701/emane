@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "registrarproxy.h"
+#include "emane/registrarproxy.h"
 #include "configurationservice.h"
 #include "statisticservice.h"
 

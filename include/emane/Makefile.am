@@ -67,6 +67,7 @@ emaneinc_HEADERS =                       \
  phylayerimpl.inl                        \
  phytypes.h                              \
  platformexception.h                     \
+ platformservice.h                       \
  platformserviceprovider.h               \
  platformserviceuser.h                   \
  position.h                              \
@@ -77,6 +78,7 @@ emaneinc_HEADERS =                       \
  radioserviceuser.h                      \
  registrarexception.h                    \
  registrar.h                             \
+ registrarproxy.h                        \
  runningstatemutable.h                   \
  serializable.h                          \
  serializationexception.h                \

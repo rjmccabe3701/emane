@@ -257,8 +257,6 @@ libemane_la_SOURCES =                         \
  otastatisticpublisher.h                      \
  otauser.h                                    \
  phylayer.h                                   \
- platformservice.h                            \
- registrarproxy.h                             \
  requestmessagehandler.h                      \
  socket.h                                     \
  socketexception.h                            \
